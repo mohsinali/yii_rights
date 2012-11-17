@@ -83,4 +83,8 @@ class User extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+  
+  public function encrypt($value) {
+    return md5($value);
+  }
 }

@@ -1,131 +1,74 @@
--- phpMyAdmin SQL Dump
--- version 3.3.2deb1
--- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Nov 16, 2012 at 05:00 PM
--- Server version: 5.1.41
--- PHP Version: 5.3.2-1ubuntu4.9
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Database: `yii_rights`
+-- MySQL 5.5.22
+-- Sat, 17 Nov 2012 08:33:53 +0000
 --
 
--- --------------------------------------------------------
-
---
--- Table structure for table `authassignment`
---
-
-DROP TABLE IF EXISTS `authassignment`;
-CREATE TABLE IF NOT EXISTS `authassignment` (
-  `itemname` varchar(64) NOT NULL,
-  `userid` varchar(64) NOT NULL,
-  `bizrule` text,
-  `data` text,
-  PRIMARY KEY (`itemname`,`userid`)
+CREATE TABLE `AuthAssignment` (
+   `itemname` varchar(64) not null,
+   `userid` varchar(64) not null,
+   `bizrule` text,
+   `data` text,
+   PRIMARY KEY (`itemname`,`userid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `authassignment`
---
+INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES 
+('Admin', 'demo', '', 'N;'),
+('Admin', '1', '', 'N;'),
+('Site.Contact', '1', '', 'N;');
 
-INSERT INTO `authassignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES
-('Admin', 'demo', NULL, 'N;'),
-('Admin', '1', NULL, 'N;'),
-('Site.Contact', '1', NULL, 'N;');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `authitem`
---
-
-DROP TABLE IF EXISTS `authitem`;
-CREATE TABLE IF NOT EXISTS `authitem` (
-  `name` varchar(64) NOT NULL,
-  `type` int(11) NOT NULL,
-  `description` text,
-  `bizrule` text,
-  `data` text,
-  PRIMARY KEY (`name`)
+CREATE TABLE `AuthItem` (
+   `name` varchar(64) not null,
+   `type` int(11) not null,
+   `description` text,
+   `bizrule` text,
+   `data` text,
+   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `authitem`
---
+INSERT INTO `AuthItem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES 
+('Admin', '2', '', '', 'N;'),
+('Authenticated', '2', '', '', 'N;'),
+('Guest', '2', '', '', 'N;'),
+('Site.Contact', '0', '', '', 'N;'),
+('New Task', '1', 'task_description', '', 'N;');
 
-INSERT INTO `authitem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
-('Admin', 2, NULL, NULL, 'N;'),
-('Authenticated', 2, NULL, NULL, 'N;'),
-('Guest', 2, NULL, NULL, 'N;'),
-('Site.Contact', 0, NULL, NULL, 'N;'),
-('New Task', 1, 'task_description', NULL, 'N;');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `authitemchild`
---
-
-DROP TABLE IF EXISTS `authitemchild`;
-CREATE TABLE IF NOT EXISTS `authitemchild` (
-  `parent` varchar(64) NOT NULL,
-  `child` varchar(64) NOT NULL,
-  PRIMARY KEY (`parent`,`child`),
-  KEY `child` (`child`)
+CREATE TABLE `AuthItemChild` (
+   `parent` varchar(64) not null,
+   `child` varchar(64) not null,
+   PRIMARY KEY (`parent`,`child`),
+   KEY `child` (`child`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `authitemchild`
---
+-- [Table `AuthItemChild` is empty]
 
-
--- --------------------------------------------------------
-
---
--- Table structure for table `rights`
---
-
-DROP TABLE IF EXISTS `rights`;
-CREATE TABLE IF NOT EXISTS `rights` (
-  `itemname` varchar(64) NOT NULL,
-  `type` int(11) NOT NULL,
-  `weight` int(11) NOT NULL,
-  PRIMARY KEY (`itemname`)
+CREATE TABLE `Rights` (
+   `itemname` varchar(64) not null,
+   `type` int(11) not null,
+   `weight` int(11) not null,
+   PRIMARY KEY (`itemname`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `rights`
---
+-- [Table `Rights` is empty]
 
+CREATE TABLE `user` (
+   `id` int(11) not null auto_increment,
+   `username` varchar(100),
+   `first_name` varchar(200) not null,
+   `last_name` varchar(200) not null,
+   `email` varchar(100) not null,
+   `password` varchar(255) not null,
+   `city_id` int(11),
+   `profile_image` varchar(200),
+   PRIMARY KEY (`id`),
+   UNIQUE KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=26;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `username`) VALUES
-(1, 'admin'),
-(2, 'golden'),
-(3, 'freelancer');
+INSERT INTO `user` (`id`, `username`, `first_name`, `last_name`, `email`, `password`, `city_id`, `profile_image`) VALUES 
+('1', 'admin', 'Mohsin', 'Ali', 'ma@yahoo.com', '202cb962ac59075b964b07152d234b70', '1', ''),
+('2', 'demo', 'Ikram', 'Haq', 'ik@yahoo.com', '202cb962ac59075b964b07152d234b70', '2', ''),
+('8', '', 'Noman', 'Ahmed', 'nm@yahoo.com', '202cb962ac59075b964b07152d234b70', '3', ''),
+('15', '', 'John', 'Smith', 'john@yahoo.com', '202cb962ac59075b964b07152d234b70', '4', '2879-right-banner-4.jpg'),
+('17', '', 'New', 'Password', 'new@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '765-right-banner-2.jpg'),
+('20', '', 'New', 'Password', 'ma22@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '1558-'),
+('21', '', 'New', 'Password', 'ma33@yahoo.com', '3d186804534370c3c817db0563f0e461', '3', '7900-'),
+('25', '', 'New user', 'last', 'hello@hotmail.com', '3d186804534370c3c817db0563f0e461', '2', '2833-product_3.jpg');
