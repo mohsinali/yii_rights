@@ -5,12 +5,14 @@
 
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
+Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/bootstrap');
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'My Web Application',
+  'theme'=>'bootstrap', // requires you to copy the theme under your themes directory
 
 	// preloading 'log' component
-	'preload'=>array('log'),
+	'preload'=>array('bootstrap','log'),
 
 	// autoloading model and component classes
 	'import'=>array(
@@ -22,11 +24,20 @@ return array(
 
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
-		'gii'=>array(
-			'class'=>'system.gii.GiiModule',
-			'password'=>'123',
-			// If removed, Gii defaults to localhost only. Edit carefully to taste.
-			'ipFilters'=>array('127.0.0.1','::1'),
+//		'gii'=>array(
+//			'class'=>'system.gii.GiiModule',
+//			'password'=>'123',
+//			// If removed, Gii defaults to localhost only. Edit carefully to taste.
+//			'ipFilters'=>array('127.0.0.1','::1'),
+//		),
+    'gii'=>array(
+        'class'=>'system.gii.GiiModule',        
+        'password'=>'123',
+        // If removed, Gii defaults to localhost only. Edit carefully to taste.
+        'ipFilters'=>array('127.0.0.1','::1'),
+        'generatorPaths'=>array(
+            'bootstrap.gii',
+        )
 		),
 		'rights' => array(
 		  'install' => false,
@@ -43,6 +54,9 @@ return array(
 		'authManager' => array(
 		  'class' => 'RDbAuthManager',//add this
 		),
+      'bootstrap'=>array(
+        'class'=>'bootstrap.components.Bootstrap',
+       ),
 		// uncomment the following to enable URLs in path-format
 		/*
 		'urlManager'=>array(

@@ -32,7 +32,7 @@ class UserController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+				'actions'=>array('create','update', 'createsalon'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -62,22 +62,73 @@ class UserController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new User;
+      $model = new User;
+        $model->user_role = "Authenticated";
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
+//echo "<pre>";
+//print_r($_POST);
+//echo "</pre>";
+        if (isset($_POST['User'])) {
+            $model->attributes = $_POST['User'];
+            $model->city_id = $_POST['city_id'];
 
-		if(isset($_POST['User']))
-		{
-			$model->attributes=$_POST['User'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
-		}
+            $rnd = rand(0, 9999);
+            $uploadedFile = CUploadedFile::getInstance($model, 'profile_image');
+            $fileName = "{$rnd}-{$uploadedFile}";
+            $model->profile_image = $fileName;
 
-		$this->render('create',array(
-			'model'=>$model,
-		));
+            if ($model->save()) {
+                $model->assignUserToRole();
+                $uploadedFile->saveAs(Yii::app()->basePath . '/files/user_profile_pictures/' . $fileName);
+                $this->redirect(array('view', 'id' => $model->id));
+            }
+        }
+
+        $this->render('create', array(
+            'model' => $model,
+        ));
 	}
+  
+  public function actionCreateSalon(){
+//  http ://www.yiiframework.com/wiki/19/how-to-use-a-single-form-to-collect-data-for-two-or-more-models/
+    $model_user = new User;
+    $model_profile_salon = new ProfileSalon;
+    $model_user->user_role = "Salon";            
+
+    if(isset($_POST['User']) and isset($_POST['ProfileSalon'])){
+//        $model_user->validate;
+
+        $model_user->city_id = $_POST['city_id'];
+        $model_user->attributes = $_POST['User'];
+        $model_profile_salon->attributes = $_POST['ProfileSalon'];
+
+        $rnd = rand(0, 9999);
+        $uploadedFile = CUploadedFile::getInstance($model_user, 'profile_image');
+        $fileName = "{$rnd}-{$uploadedFile}";
+        $model_user->profile_image = $fileName;
+
+        $model_user->validate();
+        $model_profile_salon->validate();
+
+        if($model_user->save()){
+            $model_user->assignUserToRole();
+            $uploadedFile->saveAs(Yii::app()->basePath.'/files/user_profile_pictures/'.$fileName);
+
+            $model_profile_salon->user_id = $model_user->id;
+            if($model_profile_salon->save()){
+                Yii::app()->user->setFlash("success", "You have been signed up as a 'Salon'.");
+                $this->redirect(array('view','id'=>$model_user->id));
+            }
+        }
+    }
+
+    $this->render('createsalon', array(
+    'model' => $model_user,
+    'model_profile_salon' => $model_profile_salon,
+));
+}
 
 	/**
 	 * Updates a particular model.
@@ -155,6 +206,19 @@ class UserController extends Controller
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
 	}
+  
+  public function getCityList() {
+        $cities = City::model()->findall();
+        $citiesArray = CHtml::listData($cities, 'id', 'name');
+
+        return $citiesArray;
+    }
+
+    public function getCountryList() {
+        $options = Country::model()->findall();
+        $countryArray = CHtml::listData($options, 'id', 'name');
+        return $countryArray;
+    }
 
 	/**
 	 * Performs the AJAX validation.

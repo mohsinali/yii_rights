@@ -1,6 +1,6 @@
 --
 -- MySQL 5.5.22
--- Sat, 17 Nov 2012 08:33:53 +0000
+-- Sat, 24 Nov 2012 17:18:27 +0000
 --
 
 CREATE TABLE `AuthAssignment` (
@@ -14,7 +14,9 @@ CREATE TABLE `AuthAssignment` (
 INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES 
 ('Admin', 'demo', '', 'N;'),
 ('Admin', '1', '', 'N;'),
-('Site.Contact', '1', '', 'N;');
+('Site.Contact', '1', '', 'N;'),
+('Authenticated', '28', '', 'N;'),
+('Salon', '29', '', 'N;');
 
 CREATE TABLE `AuthItem` (
    `name` varchar(64) not null,
@@ -50,6 +52,95 @@ CREATE TABLE `Rights` (
 
 -- [Table `Rights` is empty]
 
+CREATE TABLE `city` (
+   `id` int(11) not null auto_increment,
+   `name` varchar(150) not null,
+   `country_id` int(11) not null,
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=5;
+
+INSERT INTO `city` (`id`, `name`, `country_id`) VALUES 
+('1', 'Karachi', '1'),
+('2', 'Lahore', '1'),
+('3', 'Beijing', '3'),
+('4', 'Kolkata', '2');
+
+CREATE TABLE `country` (
+   `id` int(11) not null auto_increment,
+   `name` varchar(150) not null,
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=5;
+
+INSERT INTO `country` (`id`, `name`) VALUES 
+('1', 'Pakistan'),
+('2', 'India'),
+('3', 'China'),
+('4', 'UK');
+
+CREATE TABLE `profile_salon` (
+   `id` int(11) not null auto_increment,
+   `salon_name` varchar(200) not null,
+   `phone` varchar(100),
+   `address1` varchar(255),
+   `address2` varchar(255),
+   `contact_person` varchar(255),
+   `contact_email` varchar(255),
+   `salon_type` int(11),
+   `salon_picture` varchar(200),
+   `business_description` text,
+   `services_offered` text,
+   `lattitude` decimal(17,15),
+   `longitude` decimal(17,15),
+   `user_id` int(11),
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=3;
+
+INSERT INTO `profile_salon` (`id`, `salon_name`, `phone`, `address1`, `address2`, `contact_person`, `contact_email`, `salon_type`, `salon_picture`, `business_description`, `services_offered`, `lattitude`, `longitude`, `user_id`) VALUES 
+('1', 'Golden Salon', '321321', 'M.C. Green Town', '', 'Shahid', 'email@yahoo.com', '1', '', 'loren ipos', 'lorem ipos', '24.369852800000000', '73.147852900000000', '25'),
+('2', 'Golden Salon', '021326598', 'M.C. 1081', 'Green Town Karachi', 'John Smith', 'info@yahoo.com', '2', '', 'Business Description', 'Services Offered\r\n- Top two', '24.326598700000000', '72.326598700000000', '29');
+
+CREATE TABLE `salon_type` (
+   `id` int(11) not null auto_increment,
+   `name` varchar(150),
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=4;
+
+INSERT INTO `salon_type` (`id`, `name`) VALUES 
+('1', 'Men'),
+('2', 'Women'),
+('3', 'Unisex');
+
+CREATE TABLE `tbl_migration` (
+   `version` varchar(255) not null,
+   `apply_time` int(11),
+   PRIMARY KEY (`version`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+INSERT INTO `tbl_migration` (`version`, `apply_time`) VALUES 
+('m000000_000000_base', '1350561211'),
+('m121018_111031_create_user_table', '1350562185'),
+('m121018_121209_create_country_table', '1350564189'),
+('m121018_121620_create_city_table', '1350564189'),
+('m121031_104521_create_role_table', '1351686160'),
+('m121101_113606_add_column_role_id_city_id', '1351771858'),
+('m121102_085249_add_column_profile_image', '1351846481'),
+('m121112_110327_drop_role_id_column_from_tbl_user', '1352718315'),
+('m121113_114947_create_table_tbl_profile_salon', '1352811364'),
+('m121113_131154_create_table_tbl_salon_type', '1352812657'),
+('m121114_051943_add_column_user_id_in_tbl_profile_salon', '1352870623');
+
+CREATE TABLE `tbl_role` (
+   `id` int(11) not null auto_increment,
+   `name` varchar(150) not null,
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=5;
+
+INSERT INTO `tbl_role` (`id`, `name`) VALUES 
+('1', 'Salon'),
+('2', 'Freelancer'),
+('3', 'Authenticated'),
+('4', 'test');
+
 CREATE TABLE `user` (
    `id` int(11) not null auto_increment,
    `username` varchar(100),
@@ -61,7 +152,7 @@ CREATE TABLE `user` (
    `profile_image` varchar(200),
    PRIMARY KEY (`id`),
    UNIQUE KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=26;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=30;
 
 INSERT INTO `user` (`id`, `username`, `first_name`, `last_name`, `email`, `password`, `city_id`, `profile_image`) VALUES 
 ('1', 'admin', 'Mohsin', 'Ali', 'ma@yahoo.com', '202cb962ac59075b964b07152d234b70', '1', ''),
@@ -71,4 +162,17 @@ INSERT INTO `user` (`id`, `username`, `first_name`, `last_name`, `email`, `passw
 ('17', '', 'New', 'Password', 'new@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '765-right-banner-2.jpg'),
 ('20', '', 'New', 'Password', 'ma22@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '1558-'),
 ('21', '', 'New', 'Password', 'ma33@yahoo.com', '3d186804534370c3c817db0563f0e461', '3', '7900-'),
-('25', '', 'New user', 'last', 'hello@hotmail.com', '3d186804534370c3c817db0563f0e461', '2', '2833-product_3.jpg');
+('25', '', 'New user', 'last', 'hello@hotmail.com', '3d186804534370c3c817db0563f0e461', '2', '2833-product_3.jpg'),
+('28', '', 'New', 'User', 'geoff@folloh.com', '4297f44b13955235245b2497399d7a93', '1', '5072-ik_1.jpg'),
+('29', 'golden_salon', 'Golden', 'Salon', 'customer1@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '4748-ik_1.jpg');
+
+CREATE TABLE `user_old` (
+   `id` int(11) not null auto_increment,
+   `username` varchar(100) not null,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=4;
+
+INSERT INTO `user_old` (`id`, `username`) VALUES 
+('1', 'admin'),
+('2', 'golden'),
+('3', 'freelancer');
