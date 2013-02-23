@@ -1,6 +1,6 @@
 --
 -- MySQL 5.5.22
--- Sat, 24 Nov 2012 17:18:27 +0000
+-- Sat, 23 Feb 2013 07:07:32 +0000
 --
 
 CREATE TABLE `AuthAssignment` (
@@ -16,7 +16,8 @@ INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES
 ('Admin', '1', '', 'N;'),
 ('Site.Contact', '1', '', 'N;'),
 ('Authenticated', '28', '', 'N;'),
-('Salon', '29', '', 'N;');
+('Salon', '29', '', 'N;'),
+('Authenticated', '30', '', 'N;');
 
 CREATE TABLE `AuthItem` (
    `name` varchar(64) not null,
@@ -32,7 +33,15 @@ INSERT INTO `AuthItem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
 ('Authenticated', '2', '', '', 'N;'),
 ('Guest', '2', '', '', 'N;'),
 ('Site.Contact', '0', '', '', 'N;'),
-('New Task', '1', 'task_description', '', 'N;');
+('New Task', '1', 'task_description', '', 'N;'),
+('Voucher.*', '1', '', '', 'N;'),
+('Voucher.View', '0', '', '', 'N;'),
+('Voucher.Create', '0', '', '', 'N;'),
+('Voucher.Update', '0', '', '', 'N;'),
+('Voucher.Delete', '0', '', '', 'N;'),
+('Voucher.Index', '0', '', '', 'N;'),
+('Voucher.Admin', '0', '', '', 'N;'),
+('Salon', '2', 'Salon Role', '', 'N;');
 
 CREATE TABLE `AuthItemChild` (
    `parent` varchar(64) not null,
@@ -41,7 +50,14 @@ CREATE TABLE `AuthItemChild` (
    KEY `child` (`child`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
--- [Table `AuthItemChild` is empty]
+INSERT INTO `AuthItemChild` (`parent`, `child`) VALUES 
+('Authenticated', 'Voucher.Index'),
+('Authenticated', 'Voucher.View'),
+('Guest', 'Voucher.Index'),
+('Guest', 'Voucher.View'),
+('Salon', 'Voucher.Create'),
+('Salon', 'Voucher.Index'),
+('Salon', 'Voucher.View');
 
 CREATE TABLE `Rights` (
    `itemname` varchar(64) not null,
@@ -152,19 +168,20 @@ CREATE TABLE `user` (
    `profile_image` varchar(200),
    PRIMARY KEY (`id`),
    UNIQUE KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=30;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=31;
 
 INSERT INTO `user` (`id`, `username`, `first_name`, `last_name`, `email`, `password`, `city_id`, `profile_image`) VALUES 
-('1', 'admin', 'Mohsin', 'Ali', 'ma@yahoo.com', '202cb962ac59075b964b07152d234b70', '1', ''),
+('1', 'admin', 'Mohsin', 'Ali', 'ma@yahoo.com', '202cb962ac59075b964b07152d234b70', '1', '2833-product_3.jpg'),
 ('2', 'demo', 'Ikram', 'Haq', 'ik@yahoo.com', '202cb962ac59075b964b07152d234b70', '2', ''),
-('8', '', 'Noman', 'Ahmed', 'nm@yahoo.com', '202cb962ac59075b964b07152d234b70', '3', ''),
-('15', '', 'John', 'Smith', 'john@yahoo.com', '202cb962ac59075b964b07152d234b70', '4', '2879-right-banner-4.jpg'),
-('17', '', 'New', 'Password', 'new@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '765-right-banner-2.jpg'),
-('20', '', 'New', 'Password', 'ma22@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '1558-'),
-('21', '', 'New', 'Password', 'ma33@yahoo.com', '3d186804534370c3c817db0563f0e461', '3', '7900-'),
-('25', '', 'New user', 'last', 'hello@hotmail.com', '3d186804534370c3c817db0563f0e461', '2', '2833-product_3.jpg'),
-('28', '', 'New', 'User', 'geoff@folloh.com', '4297f44b13955235245b2497399d7a93', '1', '5072-ik_1.jpg'),
-('29', 'golden_salon', 'Golden', 'Salon', 'customer1@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '4748-ik_1.jpg');
+('8', 'nm', 'Noman', 'Ahmed', 'nm@yahoo.com', '202cb962ac59075b964b07152d234b70', '3', ''),
+('15', 'john', 'John', 'Smith', 'john@yahoo.com', '202cb962ac59075b964b07152d234b70', '4', '2879-right-banner-4.jpg'),
+('17', 'new', 'New', 'Password', 'new@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '765-right-banner-2.jpg'),
+('20', 'ma22', 'New', 'Password', 'ma22@yahoo.com', '3d186804534370c3c817db0563f0e461', '4', '1558-'),
+('21', 'ma33', 'New', 'Password', 'ma33@yahoo.com', '3d186804534370c3c817db0563f0e461', '3', '7900-'),
+('25', 'hello', 'New user', 'last', 'hello@hotmail.com', '3d186804534370c3c817db0563f0e461', '2', '2833-product_3.jpg'),
+('28', 'test', 'New', 'User', 'geoff@folloh.com', '4297f44b13955235245b2497399d7a93', '1', '5072-ik_1.jpg'),
+('29', 'golden_salon', 'Golden', 'Salon', 'customer1@yahoo.com', '202cb962ac59075b964b07152d234b70', '4', '4748-ik_1.jpg'),
+('30', 'test1', 'Test', 'One', 'mail@yahoo.com', 'e10adc3949ba59abbe56e057f20f883e', '1', '946-face1.jpeg');
 
 CREATE TABLE `user_old` (
    `id` int(11) not null auto_increment,
@@ -176,3 +193,23 @@ INSERT INTO `user_old` (`id`, `username`) VALUES
 ('1', 'admin'),
 ('2', 'golden'),
 ('3', 'freelancer');
+
+CREATE TABLE `voucher` (
+   `id` int(11) not null auto_increment,
+   `name` varchar(200) not null,
+   `discount` int(11) not null,
+   `quantity` int(11) not null default '1',
+   `validity` date not null,
+   `saving` int(11) not null,
+   `description` text,
+   `conditions` text,
+   `is_active` tinyint(4) default '1',
+   `user_id` int(11) not null,
+   PRIMARY KEY (`id`),
+   UNIQUE KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=4;
+
+INSERT INTO `voucher` (`id`, `name`, `discount`, `quantity`, `validity`, `saving`, `description`, `conditions`, `is_active`, `user_id`) VALUES 
+('1', 'Beauty Spa', '50', '20', '2013-01-05', '500', 'Lorem iposum', '- Condition\r\n- Two\r\n- Three', '', '1'),
+('2', 'Auto Wheel Voucher', '50', '50', '2013-02-09', '500', 'Lorem iposum', '- Condition\r\n- Two\r\n- Three', '', '29'),
+('3', 'Money for Monay', '15', '20', '2012-09-03', '400', 'hkjhljk', 'hoh oiu yyub ', '', '29');
